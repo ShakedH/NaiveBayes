@@ -1,6 +1,4 @@
-import Tkinter
-from Tkinter import Label, Button, Tk
-
+from Tkinter import *
 
 class MainWindow:
     def __init__(self, master):
@@ -15,6 +13,7 @@ class MainWindow:
 
         self.close_button = Button(master, text="Close", command=master.quit)
         self.close_button.pack()
+
 
     def greet(self):
         print("Greetings!")
