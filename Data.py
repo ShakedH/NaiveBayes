@@ -12,6 +12,11 @@ class Data:
         mode = self.data.mode()[attrName][0]
         self.data[attrName] = self.data[attrName].fillna(mode)
 
+    def cleanNumericalAttr(self, attrName):
+        for classValue in self.attributes['class']:
+            mean = self.data.loc[(self.data['class'] == classValue), attrName].mean()
+            self.data[attrName & 'class' == classValue] = self.data[attrName & 'class' == classValue].fillna(mean)
+
     def cleanData(self):
         for attrName in self.attributes:
             if not self.attributes[attrName]:
