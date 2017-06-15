@@ -6,7 +6,6 @@ import pandas
 # numOfRecords, int
 # numOfBins, int
 # numericAttrBins, dict<string, int[]> <attrName, attrBinsUpperLimits>
-
 # rowsOfClass - dictionary<class Values, number of rows>
 # m - constant
 class Data:
