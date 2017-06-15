@@ -14,6 +14,7 @@ class Classifier:
         n = self.data.numOfRecords
         return (nc + self.m_estimator * p) / (n + self.m_estimator)
 
+    # Classify a single new observation
     def classifyObservation(self, record):
         maxClass = ""
         maxCnb = float("-inf")
@@ -36,8 +37,9 @@ class Classifier:
                 maxClass = classVal
         return maxClass
 
+    # Classify a set of new observations
     def classifySet(self, dataFrame, filePath):
         outputFile = open(filePath + "output.txt", "w")
         for index, row in dataFrame.iterrows():
             outputFile.write("{} {}".format(index + 1, self.classifyObservation(row)))
-        outputFile.close()
+        outputFile.close()  # File content is not visible until file is closed
