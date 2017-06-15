@@ -19,7 +19,7 @@ class Data:
 
     def cleanData(self):
         for attrName in self.attributes:
-            if not self.attributes[attrName]:
+            if not self.attributes[attrName]:  # empty values array = numeric attribute
                 self.cleanNumericalAttr(attrName)
             else:
                 self.cleanCategorialAttr(attrName)
