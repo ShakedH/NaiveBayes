@@ -25,9 +25,13 @@ class Data:
             labels = range(len(bins) - 1)
         return pandas.cut(x=column, bins=bins, labels=labels, include_lowest=True)
 
+    # Returns the number of records in class 'classval' in which the value of 'attrName' is 'attrVal'
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
         # For Categorial:
         return len(self.data.loc[(self.data['class'] == classVal) & (self.data[attrName] == attrVal)].index)
+
+    def getAttributes(self):
+        return self.attributes
 
     def discretizateAttr(self, attrName):
         minValue = self.data[attrName].min()
