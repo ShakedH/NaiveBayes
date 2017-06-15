@@ -14,13 +14,17 @@ class Classifier:
     def classifyObservation(self, record):
         maxClass = ""
         maxCnb = float("-inf")
-        attributs = self.data.getAttributes()
+        attributes = self.data.getAttributes()
         for classVal in self.data.rowsOfClass:
-            pCi = self.data.rowsOfClass[classVal]
+            pCi = self.data.rowsOfClass[classVal] / self.data.numOfRecords
             multiply = 1
-            for attrName in attributs:
+            for attrName in attributes:
                 attrVal = record[attrName]
-                multiply *= self.data.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal)
+                if self.data.isNumerical(attrName):
+                    attrVal = self.data.binning(attrVal, self.data.getAttributes()[attrName])
+                else:
+                    attrVal = attrVal[0]
+                multiply *= self.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal)
             Cnb = pCi * multiply
             if Cnb > maxCnb:
                 maxCnb = Cnb
