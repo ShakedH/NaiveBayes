@@ -8,7 +8,7 @@ import pandas
 # numOfBins, int
 # numericAttrBins, dict<string, int[]> <attrName, attrBinsUpperLimits>
 # rowsOfClass - dictionary<class Values, number of rows>
-# m - constant
+# m - constant, m-estimator
 class Data:
     m = 2
 
@@ -21,9 +21,13 @@ class Data:
         self.cleanData()
         self.initializeMembers()
 
+    # Returns the number of records in class 'classval' in which the value of 'attrName' is 'attrVal'
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
         # For Categorial:
         return len(self.data.loc[(self.data['class'] == classVal) & (self.data[attrName] == attrVal)].index)
+
+    def getAttributes(self):
+        return self.attributes
 
     def discretizateAttr(self, attrName):
         column = self.data[attrName]
