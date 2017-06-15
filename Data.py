@@ -1,3 +1,12 @@
+import pandas
+
+# DATA MEMBERS:
+# data, pandas.DataFrame
+# attributs, dict<string, string[]> <attrName, attrValues>
+# numOfRecords, int
+# numOfBins, int
+# numericAttrBins, dict<string, int[]> <attrName, attrBinsUpperLimits>
+
 # rowsOfClass - dictionary<class Values, number of rows>
 # m - constant
 class Data:
@@ -16,8 +25,9 @@ class Data:
         return len(self.data.loc[(self.data['class'] == classVal) & self.data[attrName] == attrVal].index)
 
     def discretizateAttr(self, attrName):
-        minValue = self.data[attrName].min
-        maxValue = self.data[attrName].max
+        column = self.data[attrName]
+        minValue = column.min
+        maxValue = column.max
         binWidth = (maxValue - minValue) / self.numOfBins
         binLimit = minValue + binWidth
         bins = []
@@ -25,6 +35,8 @@ class Data:
             bins.append(binLimit)
             binLimit = min(maxValue, binLimit + binWidth)
         self.numericAttrBins[attrName] = bins
+        for row in column.itertuples():
+
 
     def initializeMembers(self):
         self.rowsOfClass = {}
@@ -48,4 +60,5 @@ class Data:
                 self.cleanNumericalAttr(attrName)
             else:
                 self.cleanCategorialAttr(attrName)
+
 
