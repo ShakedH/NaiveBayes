@@ -16,6 +16,7 @@ class Data:
         self.attributes = attributes
         self.numOfRecords = len(trainData.index)
         self.numOfBins = numOfBins
+        self.numericAttrs = []
         self.rowsOfClass = {}
         self.cleanData()
         self.initializeMembers()
@@ -32,6 +33,9 @@ class Data:
 
     def getAttributes(self):
         return self.attributes
+
+    def isNumerical(self, attrName):
+        return attrName in self.numericAttrs
 
     def discretizateAttr(self, attrName):
         minValue = self.data[attrName].min()
@@ -65,6 +69,7 @@ class Data:
     def cleanData(self):
         for attrName in self.attributes:
             if not self.attributes[attrName]:  # empty values array = numeric attribute
+                self.numericAttrs.append(attrName)
                 self.cleanNumericalAttr(attrName)
             else:
                 self.cleanCategorialAttr(attrName)
