@@ -1,6 +1,11 @@
 import pandas
 
-
+# DATA MEMBERS:
+# data, pandas.DataFrame
+# attributs, dict<string, string[]> <attrName, attrValues>
+# numOfRecords, int
+# numOfBins, int
+# numericAttrBins, dict<string, int[]> <attrName, attrBinsUpperLimits>
 class Data:
     def __init__(self, data, attributes, numOfBins):
         self.data = data
@@ -10,8 +15,9 @@ class Data:
         self.cleanData()
 
     def discretizateAttr(self, attrName):
-        minValue = self.data[attrName].min
-        maxValue = self.data[attrName].max
+        column = self.data[attrName]
+        minValue = column.min
+        maxValue = column.max
         binWidth = (maxValue - minValue) / self.numOfBins
         binLimit = minValue + binWidth
         bins = []
@@ -19,6 +25,8 @@ class Data:
             bins.append(binLimit)
             binLimit = min(maxValue, binLimit + binWidth)
         self.numericAttrBins[attrName] = bins
+        for row in column.itertuples():
+
 
 
     def cleanCategorialAttr(self, attrName):
