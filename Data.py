@@ -1,5 +1,6 @@
 import pandas
 
+
 # DATA MEMBERS:
 # data, pandas.DataFrame
 # attributs, dict<string, string[]> <attrName, attrValues>
@@ -12,6 +13,7 @@ class Data:
     m = 2
 
     def __init__(self, trainData, attributes, numOfBins):
+        self.numericAttrBins = None
         self.data = trainData
         self.attributes = attributes
         self.numOfRecords = len(trainData.index)
@@ -21,7 +23,7 @@ class Data:
 
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
         # For Categorial:
-        return len(self.data.loc[(self.data['class'] == classVal) & self.data[attrName] == attrVal].index)
+        return len(self.data.loc[(self.data['class'] == classVal) & (self.data[attrName] == attrVal)].index)
 
     def discretizateAttr(self, attrName):
         column = self.data[attrName]
@@ -34,8 +36,6 @@ class Data:
             bins.append(binLimit)
             binLimit = min(maxValue, binLimit + binWidth)
         self.numericAttrBins[attrName] = bins
-        for row in column.itertuples():
-
 
     def initializeMembers(self):
         self.rowsOfClass = {}
@@ -59,5 +59,3 @@ class Data:
                 self.cleanNumericalAttr(attrName)
             else:
                 self.cleanCategorialAttr(attrName)
-
-
