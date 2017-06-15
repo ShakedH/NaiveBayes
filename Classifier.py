@@ -37,6 +37,7 @@ class Classifier:
         return maxClass
 
     def classifySet(self, dataFrame, filePath):
-        with open(filePath + 'output.txt', 'w') as f:
-            for index, row in dataFrame.iterrows():
-                print("{} {}".format(index, self.classifyObservation(row)), file=f)
+        outputFile = open(filePath + "output.txt", "w")
+        for index, row in dataFrame.iterrows():
+            outputFile.write("{} {}".format(index + 1, self.classifyObservation(row)))
+        outputFile.close()
