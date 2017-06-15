@@ -15,7 +15,7 @@ class Data:
     def cleanNumericalAttr(self, attrName):
         for classValue in self.attributes['class']:
             mean = self.data.loc[(self.data['class'] == classValue), attrName].mean()
-            self.data[attrName & 'class' == classValue] = self.data[attrName & 'class' == classValue].fillna(mean)
+            self.data.loc[(self.data["class"] == classValue) & (self.data[attrName].isnull()), attrName] = mean
 
     def cleanData(self):
         for attrName in self.attributes:
@@ -26,6 +26,6 @@ class Data:
 
 
 testData = pandas.DataFrame.from_csv("C:\\Users\\user\\Desktop\\train.csv")
-attrs = {'loan': ['yes', 'no']}
+attrs = {'balance': [], 'class': ['yes', 'no']}
 dataobj = Data(testData, attrs)
 print dataobj
