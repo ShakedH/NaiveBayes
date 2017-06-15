@@ -3,30 +3,27 @@ import pandas
 
 # DATA MEMBERS:
 # data, pandas.DataFrame
-# attributs, dict<string, string[]> <attrName, attrValues>
+# attributes, dict<string, string[]> <attrName, attrValues>
 # numOfRecords, int
 # numOfBins, int
-# numericAttrBins, dict<string, int[]> <attrName, attrBinsUpperLimits>
-# rowsOfClass - dictionary<class Values, number of rows>
-# m - constant
+# rowsOfClass, dict<class values, number of rows>
+# m, constant
 class Data:
     m = 2
 
     def __init__(self, trainData, attributes, numOfBins):
-        self.numericAttrBins = None
         self.data = trainData
         self.attributes = attributes
         self.numOfRecords = len(trainData.index)
         self.numOfBins = numOfBins
-        self.numericAttrBins = None
+        self.rowsOfClass = {}
         self.cleanData()
         self.initializeMembers()
 
     def binning(self, column, bins, labels=None):
-        bins = [column.min()] + bins + [column.max()]
         if not labels:
-            labels = range(len(bins) + 1)
-        return pandas.cut(column, bins, labels, True)
+            labels = range(len(bins) - 1)
+        return pandas.cut(x=column, bins=bins, labels=labels, include_lowest=True)
 
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
         # For Categorial:
@@ -41,11 +38,11 @@ class Data:
         while binLimit < maxValue:
             bins.append(binLimit)
             binLimit += binWidth
-        self.numericAttrBins[attrName] = bins
+        bins = [minValue] + bins + [maxValue]
+        self.attributes[attrName] = bins
         self.data[attrName] = self.binning(self.data[attrName], bins)
 
     def initializeMembers(self):
-        self.rowsOfClass = {}
         for classVal in self.attributes['class']:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
             self.rowsOfClass.update({classVal: numOfRows})
@@ -59,6 +56,7 @@ class Data:
         for classValue in self.attributes['class']:
             mean = self.data.loc[(self.data['class'] == classValue), attrName].mean()
             self.data.loc[(self.data["class"] == classValue) & (self.data[attrName].isnull()), attrName] = mean
+        self.discretizateAttr(attrName)
 
     def cleanData(self):
         for attrName in self.attributes:
