@@ -7,10 +7,7 @@ import pandas
 # numOfRecords, int
 # numOfBins, int
 # rowsOfClass, dict<class values, number of rows>
-# m, constant
 class Data:
-    m = 2
-
     def __init__(self, trainData, attributes, numOfBins):
         self.data = trainData
         self.attributes = attributes
