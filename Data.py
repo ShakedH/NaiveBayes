@@ -16,8 +16,8 @@ class Data:
         self.numOfBins = numOfBins
         self.numericAttrs = []
         self.rowsOfClass = {}
-        self.cleanData()
         self.initializeMembers()
+        self.cleanData()
 
     def binning(self, column, bins, labels=None):
         if not labels:
@@ -50,6 +50,7 @@ class Data:
         for classVal in self.attributes['class']:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
             self.rowsOfClass.update({classVal: numOfRows})
+        del self.attributes['class']
 
     def cleanCategorialAttr(self, attrName):
         mode = self.data.mode()[attrName][0]
@@ -57,7 +58,7 @@ class Data:
 
     def cleanNumericalAttr(self, attrName):
         # Replace missing values with the mean value of all observations in the same class
-        for classValue in self.attributes['class']:
+        for classValue in self.rowsOfClass:
             mean = self.data.loc[(self.data['class'] == classValue), attrName].mean()
             self.data.loc[(self.data["class"] == classValue) & (self.data[attrName].isnull()), attrName] = mean
         self.discretizateAttr(attrName)
