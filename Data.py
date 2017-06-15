@@ -21,7 +21,7 @@ class Data:
     def binning(self, column, bins, labels=None):
         if not labels:
             labels = range(len(bins) - 1)
-        return pandas.cut(x=column, bins=bins, labels=labels, include_lowest=True)
+        return pandas.cut(x=column, bins=bins, labels=labels, include_lowest=True, right=False)
 
     # Returns the number of records in class 'classval' in which the value of 'attrName' is 'attrVal'
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
@@ -50,7 +50,7 @@ class Data:
     def initializeMembers(self):
         for classVal in self.attributes['class']:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
-            self.rowsOfClass.update({classVal: numOfRows})
+            self.rowsOfClass[classVal] = numOfRows
 
     def cleanCategorialAttr(self, attrName):
         mode = self.data.mode()[attrName][0]
