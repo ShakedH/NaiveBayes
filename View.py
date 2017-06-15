@@ -32,6 +32,7 @@ def getAttributesDictionary(structureFilePath):
         attrDictionary[attrName] = attrValues[1:-1].split(',')  # remove '{' and '}' and separate by comma
     return attrDictionary
 
-root = Tk()
-my_gui = MainWindow(root)
-root.mainloop()
+
+# root = Tk()
+# my_gui = MainWindow(root)
+# root.mainloop()

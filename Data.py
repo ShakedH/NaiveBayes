@@ -1,15 +1,19 @@
-import pandas
-
-
 # rowsOfClass - dictionary<class Values, number of rows>
+# m - constant
 class Data:
-    def __init__(self, data, attributes, numOfBins):
-        self.data = data
+    m = 2
+
+    def __init__(self, trainData, attributes, numOfBins):
+        self.data = trainData
         self.attributes = attributes
-        self.numOfRecords = len(data.index)
+        self.numOfRecords = len(trainData.index)
         self.numOfBins = numOfBins
         self.cleanData()
         self.initializeMembers()
+
+    def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
+        # For Categorial:
+        return len(self.data.loc[(self.data['class'] == classVal) & self.data[attrName] == attrVal].index)
 
     def discretizateAttr(self, attrName):
         minValue = self.data[attrName].min
@@ -45,8 +49,3 @@ class Data:
             else:
                 self.cleanCategorialAttr(attrName)
 
-
-testData = pandas.DataFrame.from_csv("C:\\Users\\user\\Desktop\\train.csv")
-attrs = {'balance': [], 'class': ['yes', 'no']}
-dataobj = Data(testData, attrs, 2)
-print dataobj
