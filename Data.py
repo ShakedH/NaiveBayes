@@ -6,6 +6,7 @@ import pandas
 # attributes, dict<string, string[]> <attrName, attrValues>
 # numOfRecords, int
 # numOfBins, int
+# numericAttrs, string[]
 # rowsOfClass, dict<class values, number of rows>
 class Data:
     def __init__(self, trainData, attributes, numOfBins):
@@ -38,11 +39,9 @@ class Data:
         minValue = self.data[attrName].min()
         maxValue = self.data[attrName].max()
         binWidth = (maxValue - minValue) / self.numOfBins
-        binLimit = minValue + binWidth
         bins = []
-        while binLimit < maxValue:
-            bins.append(binLimit)
-            binLimit += binWidth
+        for i in range(1, self.numOfBins):
+            bins.append(minValue + i * binWidth)
         bins = [minValue] + bins + [maxValue]
         self.attributes[attrName] = bins
         self.data[attrName] = self.binning(self.data[attrName], bins)
