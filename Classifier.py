@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 class Classifier:
     m_estimator = 2
 
@@ -24,9 +27,6 @@ class Classifier:
                 if self.data.isNumerical(attrName):
                     attrVal = self.data.binning(attrVal, self.data.getAttributes()[attrName])
                     numOfValues -= 1
-                # todo Delete this
-                if self.index == 410:
-                    print 'wait!'
                 attrVal = attrVal[0]
                 multiply *= self.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal,
                                             numOfValues=numOfValues)
@@ -36,9 +36,7 @@ class Classifier:
                 maxClass = classVal
         return maxClass
 
-    def classifySet(self, dataFrame):
-        for index, row in dataFrame.iterrows():
-            # todo Delete this
-            self.index = index
-            print "row:\n{}".format(row)
-            print "class: {}".format(self.classifyObservation(row))
+    def classifySet(self, dataFrame, filePath):
+        with open(filePath + 'output.txt', 'w') as f:
+            for index, row in dataFrame.iterrows():
+                print("{} {}".format(index, self.classifyObservation(row)), file=f)
