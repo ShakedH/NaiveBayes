@@ -1,6 +1,7 @@
 import pandas
 
 
+# rowsOfClass - dictionary<class Values, number of rows>
 class Data:
     def __init__(self, data, attributes, numOfBins):
         self.data = data
@@ -21,6 +22,11 @@ class Data:
             binLimit = min(maxValue, binLimit + binWidth)
         self.numericAttrBins[attrName] = bins
 
+    def initializeMembers(self):
+        self.rowsOfClass = {}
+        for classVal in self.attributes['class']:
+            numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
+            self.rowsOfClass.update({classVal: numOfRows})
 
     def cleanCategorialAttr(self, attrName):
         mode = self.data.mode()[attrName][0]
@@ -39,7 +45,8 @@ class Data:
             else:
                 self.cleanCategorialAttr(attrName)
 
+
 testData = pandas.DataFrame.from_csv("C:\\Users\\user\\Desktop\\train.csv")
 attrs = {'balance': [], 'class': ['yes', 'no']}
-dataobj = Data(testData, attrs)
+dataobj = Data(testData, attrs, 2)
 print dataobj
