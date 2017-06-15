@@ -1,5 +1,6 @@
 import pandas
 
+
 # DATA MEMBERS:
 # data, pandas.DataFrame
 # attributs, dict<string, string[]> <attrName, attrValues>
@@ -14,22 +15,27 @@ class Data:
         self.attributes = attributes
         self.numOfRecords = len(data.index)
         self.numOfBins = numOfBins
+        self.numericAttrBins = None
         self.cleanData()
         self.initializeMembers()
 
+    def binning(self, column, bins, labels=None):
+        bins = [column.min()] + bins + [column.max()]
+        if not labels:
+            labels = range(len(bins) + 1)
+        return pandas.cut(column, bins, labels, True)
+
     def discretizateAttr(self, attrName):
-        column = self.data[attrName]
-        minValue = column.min
-        maxValue = column.max
+        minValue = self.data[attrName].min()
+        maxValue = self.data[attrName].max()
         binWidth = (maxValue - minValue) / self.numOfBins
         binLimit = minValue + binWidth
         bins = []
-        while binLimit <= maxValue:
+        while binLimit < maxValue:
             bins.append(binLimit)
-            binLimit = min(maxValue, binLimit + binWidth)
+            binLimit += binWidth
         self.numericAttrBins[attrName] = bins
-        for row in column.itertuples():
-
+        self.data[attrName] = self.binning(self.data[attrName], bins)
 
     def initializeMembers(self):
         self.rowsOfClass = {}
