@@ -51,13 +51,6 @@ class Data:
         self.attributes[attrName] = bins
         self.data[attrName] = self.binning(self.data[attrName], bins)
 
-    # Calculates number of observations for each class value and updates rowsOfClass dictionary
-    def initializeMembers(self):
-        for classVal in self.attributes['class']:
-            numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
-            self.rowsOfClass[classVal] = numOfRows
-        del self.attributes['class']
-
     # Fills missing values with mode
     # Categorical attributes only
     def cleanCategoricalAttr(self, attrName):
@@ -80,3 +73,24 @@ class Data:
                 self.cleanNumericalAttr(attrName)
             else:
                 self.cleanCategoricalAttr(attrName)
+
+    # Calculates number of observations for each class value and updates rowsOfClass dictionary
+    def initializeMembers(self):
+        for classVal in self.attributes['class']:
+            numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
+            self.rowsOfClass[classVal] = numOfRows
+        del self.attributes['class']
+
+    # Returns a dictionary<string, string[]> <attrName, attrValues> based on structure file
+    @staticmethod
+    def getAttributesDictionary(structureFilePath):
+        attrDictionary = {}
+        structureFile = open(structureFilePath, "r").read().split()
+        for i in xrange(1, len(structureFile), 3):
+            attrName = structureFile[i]
+            attrValues = structureFile[i + 1]
+            attrDictionary[attrName] = []
+            if attrValues == "NUMERIC":
+                continue
+            attrDictionary[attrName] = attrValues[1:-1].split(',')  # remove '{' and '}' and separate by comma
+        return attrDictionary
