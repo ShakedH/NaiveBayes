@@ -43,7 +43,7 @@ class Data:
     def discretizeAttr(self, attrName):
         minValue = self.data[attrName].min()
         maxValue = self.data[attrName].max()
-        binWidth = (maxValue - minValue) / self.numOfBins
+        binWidth = (maxValue - minValue) // self.numOfBins
         bins = []
         for i in range(1, self.numOfBins):
             bins.append(minValue + i * binWidth)
