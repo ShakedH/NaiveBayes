@@ -43,7 +43,5 @@ class Classifier:
         for index, row in dataFrame.iterrows():
             # ToDo Delete this:
             print(index)
-            if index == 10:
-                break
             outputFile.write("{} {}\n".format(index + 1, self.classifyObservation(row)))
         outputFile.close()  # File content is not visible until file is closed
