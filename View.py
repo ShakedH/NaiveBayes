@@ -2,6 +2,8 @@ from Tkinter import *
 
 import win32api
 
+import time
+
 from Classifier import *
 from Data import *
 from threading import Thread
@@ -21,6 +23,7 @@ root.resizable(width=False, height=False)
 class MainWindow:
     def __init__(self, master):
         self.master = master
+        self._after_id = None
         self.path = None
         self.classifier = None
         self.numOfBins = 0
@@ -39,7 +42,7 @@ class MainWindow:
         self.binsLabel = Label(master=master, text="Discretization Bins:")
         self.directoryEntry = Entry(master=master, state="readonly")
         self.binsEntry = Entry(master=master)
-        self.binsEntry.bind("<Key>", self.validateBins)
+        self.binsEntry.bind("<Key>", self.handleWait)   # Bind keyPress event to validation function
         self.browseButton = Button(master=master, text="Browse", command=self.browseClicked)
         self.buildButton = Button(master=master, text="Build", command=self.buildClicked, state=DISABLED)
         self.classifyButton = Button(master=master, text="Classify", command=self.classifyClicked, state=DISABLED)
@@ -83,10 +86,14 @@ class MainWindow:
         tkMessageBox.showinfo("Classification Started",
                               "Classification has started. You will be alerted when completed")
 
-    def validateBins(self, event):
-        numOfBins = event.char
-        if numOfBins not in "0123456789":
-            return
+    def handleWait(self, event):
+        if self._after_id is not None:
+            self.master.after_cancel(self._after_id)
+
+        self._after_id = self.master.after(750, self.validateBins)
+
+    def validateBins(self):
+        numOfBins = self.binsEntry.get()
         try:
             numOfBins = int(float(numOfBins))
             if numOfBins < 2:
@@ -94,10 +101,11 @@ class MainWindow:
             self.validBins = True
             self.numOfBins = numOfBins
             self.buildButton['state'] = 'normal' if self.path else 'disabled'
-        except:
+        except ValueError:
             tkMessageBox.showinfo("Invalid Bins", "Discretization bins must be an integer greater than 1")
             self.validBins = False
             self.buildButton['state'] = 'disabled'
+            return 'break'
 
     def classifyInThread(self):
         testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
