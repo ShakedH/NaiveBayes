@@ -16,6 +16,7 @@ class Data:
         self.numOfBins = numOfBins
         self.numericAttrs = []
         self.rowsOfClass = {}
+        self.probabilites = {}
         self.calculateRowsOfClasses()
         self.cleanData()
 
@@ -28,7 +29,14 @@ class Data:
     # Returns the number of records in class 'classval' in which the value of 'attrName' is 'attrVal'
     # Categorical attributes only
     def numberOfRecordsByClassAndAttribute(self, classVal, attrName, attrVal):
-        return len(self.data.loc[(self.data['class'] == classVal) & (self.data[attrName] == attrVal)].index)
+        if classVal not in self.probabilites:
+            self.probabilites[classVal] = {}
+        if attrName not in self.probabilites[classVal]:
+            self.probabilites[classVal][attrName] = {}
+        if attrVal not in self.probabilites[classVal][attrName]:
+            self.probabilites[classVal][attrName][attrVal] = len(
+                self.data.loc[(self.data['class'] == classVal) & (self.data[attrName] == attrVal)].index)
+        return self.probabilites[classVal][attrName][attrVal]
 
     # Returns attributes dictionary
     def getAttributes(self):
