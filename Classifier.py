@@ -11,7 +11,7 @@ class Classifier:
     def Prob_Xk_Ci(self, classVal, attrName, attrVal, numOfValues):
         nc = self.data.numberOfRecordsByClassAndAttribute(classVal=classVal, attrName=attrName, attrVal=attrVal)
         p = 1. / numOfValues
-        n = self.data.numOfRecords
+        n = self.data.rowsOfClass[classVal]
         return (nc + self.m_estimator * p) / (n + self.m_estimator)
 
     # Classify a single new observation
@@ -29,8 +29,8 @@ class Classifier:
                     attrVal = self.data.binning(attrVal, self.data.getAttributes()[attrName])
                     numOfValues -= 1
                 attrVal = attrVal[0]
-                multiply *= self.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal,
-                                            numOfValues=numOfValues)
+                multiply = multiply * self.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal,
+                                                      numOfValues=numOfValues)
             Cnb = pCi * multiply
             if Cnb > maxCnb:
                 maxCnb = Cnb
