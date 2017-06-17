@@ -2,8 +2,6 @@ from Tkinter import *
 
 import win32api
 
-import time
-
 from Classifier import *
 from Data import *
 from threading import Thread
@@ -42,7 +40,7 @@ class MainWindow:
         self.binsLabel = Label(master=master, text="Discretization Bins:")
         self.directoryEntry = Entry(master=master, state="readonly")
         self.binsEntry = Entry(master=master)
-        self.binsEntry.bind("<Key>", self.handleWait)   # Bind keyPress event to validation function
+        self.binsEntry.bind("<Key>", self.handleWait)   # Bind keyPress event to pre-validation waiting function
         self.browseButton = Button(master=master, text="Browse", command=self.browseClicked)
         self.buildButton = Button(master=master, text="Build", command=self.buildClicked, state=DISABLED)
         self.classifyButton = Button(master=master, text="Classify", command=self.classifyClicked, state=DISABLED)
@@ -59,11 +57,11 @@ class MainWindow:
     def browseClicked(self):
         tempPath = tkFileDialog.askdirectory(initialdir=self.directoryEntry.get())
         if not os.path.exists(tempPath + "\\Structure.txt"):
-            tkMessageBox.showinfo("Missing File", "Structure.txt doesn't exist in this path")
+            tkMessageBox.showinfo("Naive Bayes Classifier", "ERROR: Structure.txt doesn't exist in this path")
         elif not os.path.exists(tempPath + "\\train.csv"):
-            tkMessageBox.showinfo("Missing File", "train.csv doesn't exist in this path")
+            tkMessageBox.showinfo("Naive Bayes Classifier", "ERROR: train.csv doesn't exist in this path")
         elif not os.path.exists(tempPath + "\\test.csv"):
-            tkMessageBox.showinfo("Missing File", "test.csv doesn't exist in this path")
+            tkMessageBox.showinfo("Naive Bayes Classifier", "ERROR: test.csv doesn't exist in this path")
         else:
             self.path = tempPath
             self.directoryEntry['state'] = 'normal'
@@ -78,13 +76,17 @@ class MainWindow:
         processedData = Data(trainData=trainData, attributes=attrs, numOfBins=self.numOfBins)
         self.classifier = Classifier(data=processedData)
         self.classifyButton['state'] = 'normal'
-        tkMessageBox.showinfo("Build Completed", "Building classifier using train-set is done!")
+        tkMessageBox.showinfo("Naive Bayes Classifier", "Building classifier using train-set is done!")
 
     def classifyClicked(self):
         thread = Thread(target=self.classifyInThread)
         thread.start()
-        tkMessageBox.showinfo("Classification Started",
+        tkMessageBox.showinfo("Naive Bayes Classifier",
                               "Classification has started. You will be alerted when completed")
+        self.binsEntry['state'] = 'readonly'
+        self.browseButton['state'] = 'disabled'
+        self.buildButton['state'] = 'disabled'
+        self.classifyButton['state'] = 'disabled'
 
     def handleWait(self, event):
         if self._after_id is not None:
@@ -102,7 +104,7 @@ class MainWindow:
             self.numOfBins = numOfBins
             self.buildButton['state'] = 'normal' if self.path else 'disabled'
         except ValueError:
-            tkMessageBox.showinfo("Invalid Bins", "Discretization bins must be an integer greater than 1")
+            tkMessageBox.showinfo("Naive Bayes Classifier", "ERROR: Discretization bins must be an integer greater than 1")
             self.validBins = False
             self.buildButton['state'] = 'disabled'
             return 'break'
@@ -110,8 +112,9 @@ class MainWindow:
     def classifyInThread(self):
         testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
         self.classifier.classifySet(testData, filePath=self.path)
-        message = "Classification Ended. The results file is located in {}".format(self.path)
-        win32api.MessageBox(0, message, "Classification Ended", 0x00001040)
+        message = "Classification is done! The results file is located in {}/output.txt".format(self.path)
+        win32api.MessageBox(0, message, "Naive Bayes Classifier", 0x00001040)
+        os._exit(0)
 
 
 naiveBayes = MainWindow(root)
