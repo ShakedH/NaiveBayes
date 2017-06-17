@@ -1,6 +1,7 @@
 from Tkinter import *
 from Classifier import *
 from Data import *
+from threading import Thread
 import os
 import tkFileDialog
 import tkMessageBox
@@ -13,6 +14,7 @@ root.geometry('{}x{}'.format(width, height))
 root.resizable(width=False, height=False)
 
 
+# noinspection PyCompatibility
 class MainWindow:
     def __init__(self, master):
         self.master = master
@@ -73,9 +75,13 @@ class MainWindow:
         tkMessageBox.showinfo("Build Completed", "Building classifier using train-set is done!")
 
     def classifyClicked(self):
-        testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
-        self.classifier.classifySet(testData, filePath=self.path)
-        tkMessageBox.showinfo("Classification Completed", "Classification is done!")
+        # testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
+        # self.classifier.classifySet(testData, filePath=self.path)
+        # tkMessageBox.showinfo("Classification Completed", "Classification is done!")
+        thread = Thread(target=self.threadedFunction)
+        thread.start()
+        tkMessageBox.showinfo("Classification Started",
+                              "Classification has started. You will be alerted when completed")
 
     def validateBins(self, event):
         numOfBins = event.char
@@ -92,6 +98,12 @@ class MainWindow:
             tkMessageBox.showinfo("Invalid Bins", "Discretization bins must be an integer greater than 1")
             self.validBins = False
             self.buildButton['state'] = 'disabled'
+
+    def threadedFunction(self):
+        testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
+        self.classifier.classifySet(testData, filePath=self.path)
+        # ToDo delete this
+        print "done"
 
 
 naiveBayes = MainWindow(root)
