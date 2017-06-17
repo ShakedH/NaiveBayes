@@ -58,14 +58,11 @@ class MainWindow:
             tkMessageBox.showinfo("Missing File", "test.csv doesn't exist in this path")
         else:
             self.path = tempPath
-            self.directoryEntry.configure(state="normal")
+            self.directoryEntry['state'] = 'normal'
             self.directoryEntry.delete(0, END)
             self.directoryEntry.insert(0, self.path)
-            self.directoryEntry.configure(state="readonly")
-            if self.validBins:
-                self.buildButton['state'] = 'normal'
-            else:
-                self.buildButton['state'] = 'disabled'
+            self.directoryEntry['state'] = 'readonly'
+            self.buildButton['state'] = 'normal' if self.validBins else 'disabled'
 
     def buildClicked(self):
         attrs = Data.getAttributesDictionary(self.path + "\\Structure.txt")
@@ -90,8 +87,7 @@ class MainWindow:
                 raise ValueError
             self.validBins = True
             self.numOfBins = numOfBins
-            if self.path:
-                self.buildButton['state'] = 'normal'
+            self.buildButton['state'] = 'normal' if self.path else 'disabled'
         except:
             tkMessageBox.showinfo("Invalid Bins", "Discretization bins must be an integer greater than 1")
             self.validBins = False
