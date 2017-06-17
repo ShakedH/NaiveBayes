@@ -26,7 +26,6 @@ class Classifier:
                 attrVal = record[[attrName]]
                 numOfValues = len(attributes[attrName])
                 if self.data.isNumerical(attrName):
-                    attrVal = self.data.binning(attrVal, self.data.getAttributes()[attrName])
                     numOfValues -= 1
                 attrVal = attrVal[0]
                 multiply = multiply * self.Prob_Xk_Ci(classVal=classVal, attrName=attrName, attrVal=attrVal,
@@ -37,9 +36,16 @@ class Classifier:
                 maxClass = classVal
         return maxClass
 
+    # Discretize all numeric attributes in the test set
+    def discretizeNumericAttrs(self, testSet):
+        for attrName in self.data.numericAttrs:
+            testSet[attrName] = self.data.binning(testSet[attrName], self.data.getAttributes()[attrName])
+        return testSet
+
     # Classify a set of new observations
-    def classifySet(self, dataFrame, filePath):
+    def classifySet(self, testSet, filePath):
+        testSet = self.discretizeNumericAttrs(testSet)
         outputFile = open(filePath + "\\output.txt", "w+")
-        for index, row in dataFrame.iterrows():
+        for index, row in testSet.iterrows():
             outputFile.write("{} {}\n".format(index + 1, self.classifyObservation(row)))
         outputFile.close()  # File content is not visible until file is closed
