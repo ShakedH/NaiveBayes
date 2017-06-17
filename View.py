@@ -1,4 +1,7 @@
 from Tkinter import *
+
+import win32api
+
 from Classifier import *
 from Data import *
 from threading import Thread
@@ -75,10 +78,7 @@ class MainWindow:
         tkMessageBox.showinfo("Build Completed", "Building classifier using train-set is done!")
 
     def classifyClicked(self):
-        # testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
-        # self.classifier.classifySet(testData, filePath=self.path)
-        # tkMessageBox.showinfo("Classification Completed", "Classification is done!")
-        thread = Thread(target=self.threadedFunction)
+        thread = Thread(target=self.classifyInThread)
         thread.start()
         tkMessageBox.showinfo("Classification Started",
                               "Classification has started. You will be alerted when completed")
@@ -99,11 +99,11 @@ class MainWindow:
             self.validBins = False
             self.buildButton['state'] = 'disabled'
 
-    def threadedFunction(self):
+    def classifyInThread(self):
         testData = pandas.DataFrame.from_csv(self.path + "\\test.csv", index_col=None)
         self.classifier.classifySet(testData, filePath=self.path)
-        # ToDo delete this
-        print "done"
+        message = "Classification Ended. The results file is located in {}".format(self.path)
+        win32api.MessageBox(0, message, "Classification Ended", 0x00001040)
 
 
 naiveBayes = MainWindow(root)
