@@ -16,7 +16,7 @@ class Data:
         self.numOfBins = numOfBins
         self.numericAttrs = []
         self.rowsOfClass = {}
-        self.initializeMembers()
+        self.calculateRowsOfClasses()
         self.cleanData()
 
     # Replaces numeric attributes with corresponding labels according bins
@@ -75,7 +75,7 @@ class Data:
                 self.cleanCategoricalAttr(attrName)
 
     # Calculates number of observations for each class value and updates rowsOfClass dictionary
-    def initializeMembers(self):
+    def calculateRowsOfClasses(self):
         for classVal in self.attributes['class']:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
             self.rowsOfClass[classVal] = numOfRows

@@ -41,7 +41,5 @@ class Classifier:
     def classifySet(self, dataFrame, filePath):
         outputFile = open(filePath + "\\output.txt", "w+")
         for index, row in dataFrame.iterrows():
-            # ToDo Delete this:
-            print(index)
             outputFile.write("{} {}\n".format(index + 1, self.classifyObservation(row)))
         outputFile.close()  # File content is not visible until file is closed
