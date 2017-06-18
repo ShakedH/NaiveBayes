@@ -51,11 +51,10 @@ class Data:
     def discretizeAttr(self, attrName):
         minValue = self.data[attrName].min()
         maxValue = self.data[attrName].max()
-        binWidth = (maxValue - minValue) // self.numOfBins
+        binWidth = (maxValue - minValue) / self.numOfBins
         bins = []
         for i in range(1, self.numOfBins):
             bins.append(minValue + i * binWidth)
-        # Todo is this ok?
         bins = [float("-inf")] + bins + [float("inf")]
         self.attributes[attrName] = bins
         self.data[attrName] = self.binning(self.data[attrName], bins)
@@ -91,6 +90,8 @@ class Data:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
             self.rowsOfClass[classVal] = numOfRows
         del self.attributes['class']
+        if 'class' in self.numericAttrs:
+            self.numericAttrs.remove('class')
 
     # Returns a dictionary<string, string[]> <attrName, attrValues> based on structure file
     @staticmethod
