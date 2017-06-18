@@ -17,8 +17,8 @@ class Data:
         self.numericAttrs = []
         self.rowsOfClass = {}
         self.probabilites = {}
-        self.calculateRowsOfClasses()
         self.cleanData()
+        self.calculateRowsOfClasses()
 
     # Replaces numeric attributes with corresponding labels according bins
     def binning(self, column, bins, labels=None):
@@ -84,6 +84,8 @@ class Data:
 
     # Calculates number of observations for each class value and updates rowsOfClass dictionary
     def calculateRowsOfClasses(self):
+        if self.isNumerical('class'):
+            self.attributes['class'] = self.data['class'].unique()
         for classVal in self.attributes['class']:
             numOfRows = len(self.data.loc[self.data['class'] == classVal].index)
             self.rowsOfClass[classVal] = numOfRows
