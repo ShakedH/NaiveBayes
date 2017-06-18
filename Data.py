@@ -55,7 +55,8 @@ class Data:
         bins = []
         for i in range(1, self.numOfBins):
             bins.append(minValue + i * binWidth)
-        bins = [minValue] + bins + [float("inf")]
+        # Todo is this ok?
+        bins = [float("-inf")] + bins + [float("inf")]
         self.attributes[attrName] = bins
         self.data[attrName] = self.binning(self.data[attrName], bins)
 
